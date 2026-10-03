@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/doc/" />
+  <Folder Name="/src/">
+    <Project Path="BlaisePascal.LastVehicle.Console/BlaisePascal.LastVehicle.UiConsole.csproj" />
+    <Project Path="Vehicle/Vehicleclass.Domain.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+</Solution>
