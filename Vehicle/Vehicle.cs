@@ -1,53 +1,128 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Formats.Tar;
+using System.Runtime.Serialization;
 using System.Text;
-using Vehicleclass.Domain;
 
-
-namespace Vehicleclass.Domain
-{ 
-
+namespace pascal.Lesson3E.ClassExample.Domain
+{
+    /// <summary>
+    /// Ogni veicolo è caratterizzato da:
+    /// Una targa(LicensePlate)
+    /// Il chilometraggio attuale(OdometerKm)
+    /// La tariffa giornaliera di noleggio(DailyRate)
+    /// Il livello percentuale di carburante nel serbatoio(FuelLevelPercentage)
+    /// Il Modello deve:
+    /// Impedire la creazione di veicoli con valori incoerenti(es.targa non valida, chilometri o tariffe negative).
+    /// Permetta di registrare i viaggi effettuati, incrementando il chilometraggio e riducendo il carburante residuo.
+    /// Consentire di effettuare il rifornimento fino a un massimo del 100 % della capienza del serbatoio.
+    /// </summary>
     public class Vehicle
     {
         private string _licensePlate;
-        private int _id;
-        private int _chilometers;
+        private int _odometerKm;
         private double _dailyRate;
-        private double _fuelLevelPercentuage;
+        private double _fuelLevelPercentage;
 
-        public string LicensePlate { get; private set; } // sia get che set sono pubblici
-        public int Chilometers {
+        public string LicensePlate
+        {
             get
             {
-                return _chilometers;
+                return _licensePlate;
             }
             private set
-            { if (value < 0) throw new ArgumentException("Chilometers cannot be negative");
-                _chilometers = value;
+            {
+                if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException($"value not allowed {nameof(_licensePlate)}: {value} ");
 
+                } else
+                {
+                    _licensePlate = value;
+                }
+                
+            }
+        }
+                
+        public int OdometerKm
+        {
+            get
+            { return _odometerKm; }
+            private set
+            {
+                if (value < 0)
+                    throw new ArgumentException($"value not allowed {nameof(OdometerKm)}: {value} ");
+             
+
+                _odometerKm = value;
+            }
+        }
+        public double DailyRate
+        {
+            get
+            { return _dailyRate; }
+            private set
+            {
+                if (value < 0)
+                    throw new ArgumentException($"value not allowed {nameof(DailyRate)}: {value} ");
+                _dailyRate = value;
+            }
+        }
+
+        public double FuelLevelPercentage
+        {
+            get
+            { return _fuelLevelPercentage; }
+            private set
+            {
+                if (value < 0 || value > 100)
+                    throw new ArgumentException($"value not allowed {nameof(FuelLevelPercentage)}: {value} ");
+
+                _fuelLevelPercentage = value;
             }
         }
 
 
-
-        public double DailyRate { get; private set; }
-        public double FuelLevelPercentuage { get; private set; };
-
-        public string GetLicensePlate() // è un metodo quindi una fuzione che restituisce un valore, in questo caso una stringa
+        /// <summary>
+        /// metodo costruttore che inizializza la targa del veicolo
+        /// </summary>
+        /// <param name="licensePlate"></param>
+        public Vehicle(string licensePlate)
         {
-            return _licensePlate;
-
+            LicensePlate = licensePlate; //chiama al set           
         }
 
-        public Vehicle(string licencePlate) // STO DICENDO CHE UN MODO PER COSTRUIRE UN OGGETTO DI TIPO VEHICLE E' PASSARE UNA STRINGA!!! L'unico modo per costruirlo è passare una stringa( in questo caso la targa)
+        /// <summary>
+        /// metodo costruttore che inizializza la targa del veicolo, il contachilometri, il prezzo giornaliero e il livello di carburante
+        /// </summary>
+        /// <param name="licensePlate"></param>
+        /// <param name="odometerKm"></param>
+        /// <param name="dailyRate"></param>
+        /// <param name="fuelLevelPercentage"></param>
+        public Vehicle(string licensePlate, int odometerKm,
+            double dailyRate, double fuelLevelPercentage)
         {
-            LicensePlate = licencePlate;
+            LicensePlate = licensePlate;
+            OdometerKm = odometerKm; //chiamata al set
+            DailyRate = dailyRate;
+            FuelLevelPercentage = fuelLevelPercentage;
         }
-        
-        public Vehicle(string licenceplate, int chilometers, double dailyRate, double fuelLevelPercentuage)
+
+        public void RegisterData(int consumedKm, double consumedFuel)
         {
-            LicensePlate = licenceplate;
-            
+            //controlli sui parametri (argument)
+            if (consumedKm <= 0)
+                throw new ArgumentException($"value not allowed {nameof(consumedKm)}: {consumedKm} ");
+            if (consumedFuel < 0)
+                throw new ArgumentException($"value not allowed {nameof(consumedFuel)}: {consumedFuel} ");
+
+            //aggiorno lo stato dell'oggetto
+            OdometerKm += consumedKm; //chiamata al set
+            FuelLevelPercentage -= consumedFuel; //chiamate set
         }
+
+
     }
 }
