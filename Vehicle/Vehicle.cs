@@ -34,7 +34,7 @@ namespace pascal.Lesson3E.ClassExample.Domain
             }
             private set
             {
-                if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value) || value.Length != 7)
                 {
                     throw new ArgumentException($"value not allowed {nameof(_licensePlate)}: {value} ");
 
@@ -45,6 +45,7 @@ namespace pascal.Lesson3E.ClassExample.Domain
                 
             }
         }
+        
                 
         public int OdometerKm
         {
